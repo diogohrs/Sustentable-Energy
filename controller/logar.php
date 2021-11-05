@@ -3,9 +3,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cpf = filter_input(INPUT_POST, "cpf", FILTER_SANITIZE_STRING);
     $senha = md5(filter_input(INPUT_POST, "senha", FILTER_SANITIZE_STRING));
 
-    $conexao = mysqli_connect("localhost", "id17666827_user", "Ounr2YE&Lv#NtmKN",
-                                "id17666827_sustentable_enery", 3306);
-
+    include('../controller/conexao.php');
+            
     if ($conexao) {
         $query = "SELECT PK_cpf, senha FROM Usuario where Pk_cpf =  '$cpf'
                     and senha = '$senha';";
@@ -13,13 +12,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $usuarios = mysqli_query($conexao, $query);
 
         if (mysqli_num_rows($usuarios)>0) {
+            if (!isset($_SESSION))
+                session_start();
+
+            $_SESSION['logado'] = "true";
+            $_SESSION['cpf_session'] = $cpf;
+            
             echo "<script language='javascript' type='text/javascript'>
                     alert('Login efetuado com sucesso!');
                     window.location.href='../index.php'</script>";
-
-                    session_start();
-
-                    $cpf_session = $cpf;
         }
         else{
             echo "<script language='javascript' type='text/javascript'>

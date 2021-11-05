@@ -11,31 +11,36 @@
             $valor_economia_energia = $quant_placas * 0.4;
             $pontuacao = $quant_placas * 100;
 
-            $conexao = mysqli_connect("localhost", "id17666827_user", "Ounr2YE&Lv#NtmKN",
-                                "id17666827_sustentable_enery", 3306);
+            include('../controller/conexao.php');
 
             if($conexao) {
 
+                if (!isset($_SESSION))
+                    session_start();
+
+                if(isset ($_SESSION['cpf_session']))
+                    $cpf = ($_SESSION['cpf_session']);
+
                 $query = "INSERT INTO Simulacao (arvores_poupadas, economia_agua, poluentes_evitados,
-                                        pontuacao, valor_economia_energia, FK_cpf) VALUES ('$arvores_poupadas', '$economia_agua',
+                                        pontuacao, valor_economia_energia, FK_cpf, quant_placas) VALUES ('$arvores_poupadas', '$economia_agua',
                                                                                     '$poluentes_evitados','$pontuacao',
-                                                                                     '$valor_economia_energia',11111111111);";
+                                                                                     '$valor_economia_energia',$cpf, '$quant_placas')";
                 
                 $insert = mysqli_query($conexao, $query);
 
-                $queryUsuario = "UPDATE Usuario SET pontuacao=$pontuacao WHERE Usuario.PK_cpf=11111111111";
+                $queryUsuario = "UPDATE Usuario SET pontuacao=$pontuacao WHERE Usuario.PK_cpf=$cpf";
                 
                 $updateUsuario = mysqli_query($conexao, $queryUsuario);
 
-                $queryRegistro = "INSERT INTO Registro (FK_usario, pontuacao_usuario) VALUES(11111111111, '$pontuacao') 
-                            WHERE Usuario.PK_cpf=11111111111";
-
+                $queryRegistro = "INSERT INTO Registro (FK_usuario, pontuacao_usuario) VALUES($cpf, '$pontuacao')";
                 
                 $insertRegistro = mysqli_query($conexao, $queryRegistro);
 
                 if($insert) {
+
+                    $_SESSION['mostra_tabela']="true";
+
                     echo "<script language='javascript' type='text/javascript'>
-                    alert('Simualção Efetuada Com Sucesso!');
                     window.location.href='../view/simulacao.php'</script>";
 
                 } else {
@@ -52,7 +57,7 @@
         }
         else {
             echo "<script language='javascript' type='text/javascript'>
-            alert('Campos vazios!');
+            alert('Campo vazio!');
             window.location.href='../view/simulacao.php'</script>";
         }
     }

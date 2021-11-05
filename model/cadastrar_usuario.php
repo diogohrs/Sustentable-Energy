@@ -9,12 +9,10 @@
 
         
         if(!empty($cpf) && !empty($nome) && !empty($senha) && !empty($cidade) && !empty($email)) {
-            
-            $conexao = mysqli_connect("localhost", "id17666827_user", "Ounr2YE&Lv#NtmKN",
-                                "id17666827_sustentable_enery", 3306);
 
+           include('../controller/conexao.php');
+            
             if($conexao) {
-                echo"conectou";
 
                 $query = "INSERT INTO Usuario (PK_cpf, nome, cidade, email, senha) VALUES ('$cpf', '$nome','$cidade', 
                                                                                             '$email', '$senha');";
@@ -24,11 +22,7 @@
                 if($insert) {
                     echo "<script language='javascript' type='text/javascript'>
                     alert('Usuario cadastrado com sucesso!');
-                    window.location.href='../view/cadastro_banco.php'</script>";
-
-                    session_start();
-
-                    $_SESSION['logado']= "true";
+                    window.location.href='../index.php'</script>";
 
                 } else {
                     echo "<script language='javascript' type='text/javascript'>
